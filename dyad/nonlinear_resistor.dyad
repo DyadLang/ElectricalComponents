@@ -1,0 +1,16 @@
+# Chua's resistor
+component NonlinearResistor
+  extends TwoPin()
+  # Conductance in inner voltage range
+  parameter Ga::Conductance 
+  # Conductance in outer voltage range
+  parameter Gb::Conductance 
+  # Inner voltage range limit
+  parameter Ve::Voltage 
+relations
+  i = if (v < -Ve) then
+        (Gb*(v + Ve) - Ga*Ve) 
+      elseif (v > Ve) then
+        (Gb*(v - Ve) + Ga*Ve) 
+      else Ga*v
+end 

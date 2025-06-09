@@ -1,0 +1,64 @@
+analysis SimpleSineRLCTransient
+  extends TransientAnalysis(alg="auto", abstol=10m, reltol=1m, start=0, stop=10)
+  model::SinRLC() = SinRLC()
+end
+
+# An RLC circuit with Sine voltage input
+example component SinRLC
+  resistor = Resistor(R=100) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 1100, "y1": 400, "x2": 1300, "y2": 600, "rot": -90}}
+    }
+  }]
+  capacitor = Capacitor(C=1m) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 800, "y1": 400, "x2": 1000, "y2": 600, "rot": -90}}
+    }
+  }]
+  inductor = Inductor(L=1) [{"Dyad": {"placement": {"icon": {"x1": 600, "y1": 100, "x2": 800, "y2": 300}}}}]
+  source = VoltageSource() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 400, "y1": 400, "x2": 600, "y2": 600, "rot": -90}}
+    }
+  }]
+  sine = BlockComponents.Sine(frequency=1, amplitude=1, phase=0) [{"Dyad": {"placement": {"icon": {"x1": 100, "y1": 400, "x2": 300, "y2": 600}}}}]
+  ground = Ground() [{
+    "Dyad": {"placement": {"icon": {"x1": 800, "y1": 900, "x2": 1000, "y2": 1100}}}
+  }]
+relations
+  initial inductor.i = 0
+  initial capacitor.v = 10
+  connect(sine.y, source.V) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(source.n, inductor.p) [{"Dyad": {"edges": [{"S": 1, "M": [{"x": 500, "y": 200}], "E": 2}]}}]
+  connect(inductor.n, resistor.n, capacitor.n) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "E": -1},
+        {"S": 2, "M": [{"x": 1200, "y": 200}], "E": -1},
+        {"S": 3, "E": -1}
+      ],
+      "junctions": [{"x": 900, "y": 200}]
+    }
+  }]
+  connect(resistor.p, ground.g, capacitor.p, source.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "M": [{"x": 1200, "y": 800}], "E": -1},
+        {"S": 2, "E": -1},
+        {"S": 3, "E": -1},
+        {"S": -1, "M": [{"x": 500, "y": 800}], "E": 4}
+      ],
+      "junctions": [{"x": 900, "y": 800}]
+    }
+  }]
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {
+        "stop": 10,
+        "expect": {"initial": {"capacitor.v": 10}, "final": {"capacitor.v": -0.067835084}}
+      }
+    }
+  }
+}
+end

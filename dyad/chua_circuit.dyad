@@ -1,0 +1,70 @@
+# Chua's circuit
+#
+# Chua's circuit is the simplest nonlinear circuit which shows chaotic behaviour.
+# The circuit consists of linear basic elements (capacitors, resistor, conductor,
+# inductor), and one nonlinear element, which is called Chua's diode.
+component ChuaCircuit
+  inductor = Inductor(L=18) [{
+    "Dyad": {"placement": {"icon": {"x1": 0, "y1": 200, "x2": 200, "y2": 400, "rot": 90}}}
+  }]
+  resistor = Resistor(R=12.5e-3) [{
+    "Dyad": {"placement": {"icon": {"x1": 0, "y1": 500, "x2": 200, "y2": 700, "rot": 90}}}
+  }]
+  conductor = Conductor(G=0.565) [{
+    "Dyad": {"placement": {"icon": {"x1": 450, "y1": 50, "x2": 650, "y2": 250, "rot": 0}}}
+  }]
+  capacitor1 = Capacitor(C=10) [{
+    "Dyad": {"placement": {"icon": {"x1": 600, "y1": 350, "x2": 800, "y2": 550, "rot": 90}}}
+  }]
+  capacitor2 = Capacitor(C=100) [{
+    "Dyad": {"placement": {"icon": {"x1": 300, "y1": 350, "x2": 500, "y2": 550, "rot": 90}}}
+  }]
+  nonlinear_resistor = NonlinearResistor(Ga=-0.757576, Gb=-0.409091, Ve=1) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 900, "y1": 350, "x2": 1100, "y2": 550, "rot": 90}}
+    }
+  }]
+  ground = Ground() [{
+    "Dyad": {"placement": {"icon": {"x1": 450, "y1": 800, "x2": 650, "y2": 1000, "rot": 0}}}
+  }]
+relations
+  initial inductor.i = 0
+  initial capacitor1.v = 4
+  initial capacitor2.v = 0
+  connect(inductor.n, resistor.p) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(inductor.p, capacitor2.p, conductor.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "M": [{"x": 100, "y": 150}], "E": 1},
+        {"S": -1, "E": 2},
+        {"S": -1, "E": 3}
+      ],
+      "junctions": [{"x": 400, "y": 150}]
+    }
+  }]
+  connect(conductor.n, nonlinear_resistor.p, capacitor1.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "E": 1},
+        {"S": -1, "M": [{"x": 1000, "y": 150}], "E": 2},
+        {"S": -1, "E": 3}
+      ],
+      "junctions": [{"x": 700, "y": 150}]
+    }
+  }]
+  connect(ground.g, resistor.n, capacitor2.n, capacitor1.n, nonlinear_resistor.n) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "E": 1},
+        {"S": -1, "M": [{"x": 100, "y": 750}], "E": 2},
+        {"S": -1, "M": [{"x": 400, "y": 750}], "E": 3},
+        {"S": -1, "M": [{"x": 700, "y": 750}], "E": 4},
+        {"S": -1, "M": [{"x": 1000, "y": 750}], "E": 5}
+      ],
+      "junctions": [{"x": 550, "y": 750}]
+    }
+  }]
+metadata {
+  "Dyad": {"tests": {"case1": {"stop": 50000, "expect": {"signals": ["capacitor1.v"]}}}}
+}
+end

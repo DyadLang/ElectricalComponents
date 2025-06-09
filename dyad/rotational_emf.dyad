@@ -1,0 +1,39 @@
+# Electromotoric force (electric/mechanic transformer) | useSupport=true
+component RotationalEMF
+  # Positive electrical pin
+  p = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": 450, "y1": -50, "x2": 550, "y2": 50}}
+    }
+  }]
+  # Negative electrical pin
+  n = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": 450, "y1": 950, "x2": 550, "y2": 1050}}
+    }
+  }]
+  # Rotor/Spline
+  rotor = Spline() [{"Dyad": {"placement": {"icon": {"x1": 950, "y1": 450, "x2": 1050, "y2": 550}}}}]
+  # Support/Housing of the emf shaft
+  housing = Spline() [{"Dyad": {"placement": {"icon": {"x1": -50, "y1": 450, "x2": 50, "y2": 550}}}}]
+  parameter k::ElectricalTorqueConstant
+  # Voltage drop between the two pins
+  variable v::Voltage
+  # Current flowing from positive to negative pin
+  variable i::Current
+  # Angle of shaft flange with respect to support (= flange.phi - support.phi)
+  variable phi::Angle
+  # Angular velocity of flange relative to support
+  variable w::AngularVelocity
+  # Torque of flange
+  variable tau::Torque
+relations
+  v = p.v-n.v
+  0 = p.i+n.i
+  i = p.i
+  phi = rotor.phi-housing.phi
+  w = der(phi)
+  k*w = v
+  tau = -k*i
+  tau = rotor.tau
+end

@@ -1,0 +1,78 @@
+# Parallel circuit with `Conductor`, `Inductor` and `Capacitor`
+component ParallelGLC
+  signal = BlockComponents.Sine(frequency=1, amplitude=1, phase=0) [{"Dyad": {"placement": {"diagram": {"x1": 0, "y1": 400, "x2": 100, "y2": 500}}}}]
+  source = CurrentSource() [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 150, "y1": 400, "x2": 250, "y2": 500, "rot": 90}}
+    }
+  }]
+  inductor = Inductor(L=1) [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 350, "y1": 400, "x2": 450, "y2": 500, "rot": 90}}
+    }
+  }]
+  capacitor = Capacitor(C=1) [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 550, "y1": 400, "x2": 650, "y2": 500, "rot": 90}}
+    }
+  }]
+  conductor = Conductor(G=0.1) [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 750, "y1": 400, "x2": 850, "y2": 500, "rot": 90}}
+    }
+  }]
+  voltage_sensor = VoltageSensor() [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 950, "y1": 400, "x2": 1050, "y2": 500, "rot": 90}}
+    }
+  }]
+  ground = Ground() [{
+    "Dyad": {"placement": {"diagram": {"x1": 550, "y1": 700, "x2": 650, "y2": 800}}}
+  }]
+relations
+  initial capacitor.v = 0.0
+  connect(signal.y, source.I) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(source.p, inductor.p, capacitor.p, conductor.p, voltage_sensor.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "M": [{"x": 200, "y": 300}], "E": -1},
+        {"S": 2, "M": [{"x": 400, "y": 300}], "E": -1},
+        {"S": 3, "E": -1},
+        {"S": 4, "M": [{"x": 800, "y": 300}], "E": -1},
+        {"S": 5, "M": [{"x": 1000, "y": 300}], "E": -1}
+      ],
+      "junctions": [{"x": 600, "y": 300}]
+    }
+  }]
+  connect(source.n, inductor.n, capacitor.n, conductor.n, voltage_sensor.n, ground.g) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "M": [{"x": 200, "y": 600}], "E": -1},
+        {"S": 2, "M": [{"x": 400, "y": 600}], "E": -1},
+        {"S": 3, "E": -1},
+        {"S": 4, "M": [{"x": 800, "y": 600}], "E": -1},
+        {"S": 5, "M": [{"x": 1000, "y": 600}], "E": -1},
+        {"S": 6, "E": -1}
+      ],
+      "junctions": [{"x": 600, "y": 600}]
+    }
+  }]
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {
+        "stop": 10,
+        "expect": {
+          "final": {
+            "capacitor.i": "-0.0779787323",
+            "inductor.i": "0.053556296",
+            "capacitor.v": "0.2442243622",
+            "inductor.v": "0.2442243622",
+            "voltage_sensor.v": "0.2442243622"
+          }
+        }
+      }
+    }
+  }
+}
+end

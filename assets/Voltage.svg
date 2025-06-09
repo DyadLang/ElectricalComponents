@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" transform-origin="center center" viewBox="0 0 1000 1000">
+  <path fill="#fff" d="M4 4h992v992H4z"/>
+  <path d="M0 500h400Zm400-400v800Zm200 100v600Zm0 300h400Z"/>
+  <path stroke="#000" stroke-width="8" d="M0 500h400m0-400v800m200-700v600m0-300h400"/>
+  <path fill="#DE39C8" d="M992 8v984H8V8zm8-8H0v1000h1000z"/>
+  <text x="250" y="300" dominant-baseline="middle" font-size="300" font-weight="200" text-anchor="middle">+</text>
+  <text x="750" y="300" dominant-baseline="middle" font-size="300" font-weight="200" text-anchor="middle">-</text>
+</svg>

@@ -1,0 +1,15 @@
+component Ground
+  g = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": 450, "y1": -50, "x2": 550, "y2": 50}}
+    }
+  }]
+relations
+  g.v = 0
+metadata {
+  "Dyad": {
+    "labels": [{"label": "$(instance)", "x": 500, "y": 1100, "rot": 0}],
+    "icons": {"default": "dyad://ElectricalComponents/Ground.svg"}
+  }
+}
+end

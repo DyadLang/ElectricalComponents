@@ -1,0 +1,152 @@
+# Detailed model of an operational amplifier
+component OpAmpDetailed
+  # Positive pin of the input port
+  p = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": -50, "y1": 650, "x2": 50, "y2": 750}}
+    }
+  }]
+  # Negative pin of the input port
+  n = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": -50, "y1": 250, "x2": 50, "y2": 350}}
+    }
+  }]
+  # Output pin
+  outp = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": 950, "y1": 450, "x2": 1050, "y2": 550}}
+    }
+  }]
+  # Positive output voltage limitation
+  p_supply = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": 450, "y1": -50, "x2": 550, "y2": 50}}
+    }
+  }]
+  # Negative output voltage limitation
+  n_supply = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": 450, "y1": 950, "x2": 550, "y2": 1050}}
+    }
+  }]
+  # Input resistance (differential input mode)
+  parameter Rdm::Resistance = 2.0e6
+  # Input resistance (common mode)
+  parameter Rcm::Resistance = 2.0e9
+  # Input capacitance
+  parameter Cin::Capacitance = 1.4e-12
+  # Input offset voltage
+  parameter Vos::Voltage = 1.0e-3
+  # Input bias current
+  parameter Ib::Current = 80.0e-9
+  # Input offset current
+  parameter Ios::Current = 20.0e-9
+  # Correction value for limiting by `p_supply`
+  parameter vcp::Voltage = 0.0
+  # Correction value for limiting by `n_supply`
+  parameter vcm::Voltage = 0.0
+  # Differential amplifier [dB]
+  parameter Avd0::SoundPowerLevel = 106.0
+  # Common-mode rejection [dB]
+  parameter CMRR::SoundPowerLevel = 90.0
+  # Dominant pole
+  parameter fp1::Frequency = 5.0
+  # Pole frequency
+  parameter fp2::Frequency = 2.0e6
+  # Pole frequency
+  parameter fp3::Frequency = 20.0e6
+  # Pole frequency
+  parameter fp4::Frequency = 100.0e6
+  # Zero frequency
+  parameter fz::Frequency = 5.0e6
+  # Slew rate for increase
+  parameter sr_p::VoltageSlope = 0.5e6
+  # Slew rate for decrease
+  parameter sr_m::VoltageSlope = 0.5e6
+  # Output resistance
+  parameter Rout::Resistance = 75.0
+  # Maximal output current (source current)
+  parameter Imaxso::Current = 25.0e-3
+  # Maximal output current (sink current)
+  parameter Imaxsi::Current = 25.0e-3
+  # Sampling Time | number of intervals: 2500, stop time: 0.003
+  parameter Ts::Time = 0.0000012
+  # Positive correction value for limiting by `p_supply`
+  final parameter vcp_abs::Voltage = abs(vcp)
+  # Positive correction value for limiting by `n_supply`
+  final parameter vcm_abs::Voltage = abs(vcm)
+  # Current of internal source I1
+  final parameter I1::Current = Ib+Ios/2.0
+  # Current of internal source I2
+  final parameter I2::Current = Ib-Ios/2.0
+  # Differential mode gain
+  final parameter Avd0_val::Real = 10.0^(Avd0/20.0)
+  # Common mode gain
+  final parameter Avcm_val::Real = (Avd0_val/(10.0^(CMRR/20.0)))/2.0
+  # Value of slew rate for increase
+  final parameter sr_p_val::VoltageSlope = abs(sr_p)
+  # Negative value of slew rate for increase
+  final parameter sr_m_val::VoltageSlope = -abs(sr_m)
+  # Orientation out outp
+  final parameter Imaxso_val::Current = abs(Imaxso)
+  # Orientation into outp
+  final parameter Imaxsi_val::Current = abs(Imaxsi)
+  variable v_pos::Voltage
+  variable v_neg::Voltage
+  variable v_vos::Voltage
+  variable v_3::Voltage
+  variable v_in::Voltage
+  variable v_4::Voltage
+  variable i_vos::Current
+  variable i_3::Current
+  variable i_r2::Current
+  variable i_c3::Current
+  variable i_4::Current
+  variable q_fr1::Real
+  variable q_fr2::Real
+  variable q_fr3::Real
+  variable q_sum::Voltage
+  variable q_sum_help::Voltage
+  variable q_fp1::Voltage
+  variable v_source::Voltage
+  # Auxiliary variable for slew rate
+  variable x::Voltage
+  variable v_out::Voltage
+  variable i_out::Current
+relations
+  initial v_source = q_fp1
+  initial x = 0
+  # power supply
+  v_pos = p_supply.v
+  v_neg = n_supply.v
+  # input stage
+  p.i = i_vos
+  n.i = i_4-i_r2-i_c3
+  0 = i_3+i_r2+i_c3-i_vos
+  p.v-n.v = v_vos+v_in
+  v_4 = n.v
+  v_3 = p.v-v_vos
+  v_vos = Vos
+  i_3 = I1+v_3/Rcm
+  v_in = Rdm*i_r2
+  i_c3 = Cin*der(v_in)
+  i_4 = I2+v_4/Rcm
+  # Frequency response
+  der(q_fr1) = 2.0*π*fp2*(v_in-q_fr1)
+  q_fr2+(1.0/(2.0*π*fp3))*der(q_fr2) = q_fr1+(1.0/(2.0*π*fz))*der(q_fr1)
+  der(q_fr3) = 2.0*π*fp4*(q_fr2-q_fr3)
+  # gain stage
+  q_sum = Avd0_val*q_fr3+Avcm_val*(v_3+v_4)
+  q_sum_help = limit_q_sum(q_sum, q_fp1, v_pos, v_neg, vcp_abs, vcm_abs)
+  der(q_fp1) = 2.0*π*fp1*(q_sum_help-q_fp1)
+  # slew rate stage
+  der(x) = (q_fp1-v_source)/Ts
+  der(v_source) = ifelse(der(x)>sr_p_val, sr_p_val, ifelse(der(x)<sr_m_val, sr_m_val, der(x)))
+  # output stage
+  v_out = outp.v
+  i_out = outp.i
+  i_out = limit_out_current(v_source, v_out, Rout, Imaxsi_val, Imaxso_val)
+  p_supply.i = 0
+  n_supply.i = 0
+end

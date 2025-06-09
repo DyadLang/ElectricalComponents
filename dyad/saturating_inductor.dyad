@@ -1,0 +1,23 @@
+# Simple model of an inductor with saturation
+component SaturatingInductor
+  extends TwoPin
+  # Nominal current
+  parameter I_nominal::Current = 1
+  # Inductance at nominal current
+  parameter L_nominal::Inductance = 1
+  # Inductance near current = 0
+  parameter L_zero::Inductance = 2*L_nominal
+  # Inductance at large currents
+  parameter L_inf::Inductance = L_nominal/2
+  # Present inductance
+  variable L_actual::Inductance
+  # Present flux
+  variable psi::MagneticFlux
+  final parameter I_par::Current = I_nominal / tan((L_nominal - L_inf) / (L_zero - L_inf))
+relations
+  # assert L_zero > L_nominal "L_zero $(L_zero) should be greater than L_nominal $(L_nominal)"
+  # assert L_inf < L_nominal "Linf $(Linf) should be less than L_nominal $(L_nominal)"
+  L_actual = L_inf + (L_zero - L_inf) * atan(i/I_par) / (i/I_par)
+  psi = L_inf*i + (L_zero - L_inf)*I_par*atan(i/I_par)
+  v = der(psi)
+end

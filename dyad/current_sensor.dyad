@@ -1,0 +1,33 @@
+# Creates a circuit component that measures the current flowing through it. Analogous to an ideal ammeter.
+component CurrentSensor
+  p = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": -50, "y1": 450, "x2": 50, "y2": 550}}
+    }
+  }]
+  n = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": 950, "y1": 450, "x2": 1050, "y2": 550}}
+    }
+  }]
+  i = RealOutput() [{
+    "Dyad": {
+      "placement": {
+        "icon": {"iconName": "pos", "x1": 450, "y1": 950, "x2": 550, "y2": 1050, "rot": 90}
+      }
+    }
+  }]
+relations
+  p.v = n.v
+  p.i = i
+  n.i = -i
+metadata {
+  "Dyad": {
+    "labels": [
+      {"label": "$(instance)", "x": 500, "y": 1100, "rot": 0},
+      {"label": "A", "x": 500, "y": 713, "rot": 0}
+    ],
+    "icons": {"default": "dyad://ElectricalComponents/TwoPinSensor.svg"}
+  }
+}
+end

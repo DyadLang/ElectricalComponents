@@ -1,0 +1,80 @@
+analysis SimpleRLCTransient
+  extends TransientAnalysis(alg="auto", abstol=10m, reltol=1m, start=0, stop=10)
+  model::RLCModel() = RLCModel()
+end
+
+# This is an RLC model.  This should support markdown.  That includes
+# HTML as well.
+example component RLCModel
+  resistor = Resistor(R=100) [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 850, "y1": 450, "x2": 950, "y2": 550, "rot": -90}}
+    }
+  }]
+  capacitor = Capacitor(C=1m) [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 550, "y1": 450, "x2": 650, "y2": 550, "rot": -90}}
+    }
+  }]
+  inductor = Inductor(L=1) [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 375, "y1": 250, "x2": 475, "y2": 350, "rot": 0}}
+    }
+  }]
+  signal = BlockComponents.Constant(k=30) [{"Dyad": {"placement": {"icon": {"x1": 0, "y1": 450, "x2": 100, "y2": 550}}}}]
+  source = VoltageSource() [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 200, "y1": 450, "x2": 300, "y2": 550, "rot": -90}}
+    }
+  }]
+  ground = Ground() [{
+    "Dyad": {
+      "placement": {"diagram": {"x1": 550, "y1": 800, "x2": 650, "y2": 900, "rot": 0}}
+    }
+  }]
+relations
+  initial inductor.i = 0
+  initial capacitor.v = 10
+  connect(signal.y, source.V) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(source.n, inductor.p) [{"Dyad": {"edges": [{"S": 1, "M": [{"x": 250, "y": 300}], "E": 2}]}}]
+  connect(inductor.n, resistor.n, capacitor.n) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "E": -1},
+        {"S": 2, "M": [{"x": 900, "y": 300}], "E": -1},
+        {"S": 3, "E": -1}
+      ],
+      "junctions": [{"x": 600, "y": 300}]
+    }
+  }]
+  connect(resistor.p, ground.g, capacitor.p, source.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "M": [{"x": 900, "y": 700}], "E": -1},
+        {"S": 2, "E": -1},
+        {"S": 3, "E": -1},
+        {"S": -1, "M": [{"x": 250, "y": 700}], "E": 4}
+      ],
+      "junctions": [{"x": 600, "y": 700}]
+    }
+  }]
+metadata {
+  "Dyad": {
+    "labels": [
+      {
+        "label": "RLC Model",
+        "x": 800,
+        "y": 100,
+        "layer": "diagram",
+        "attrs": {"font-size": "100"}
+      }
+    ],
+    "tests": {
+      "case1": {
+        "stop": 10,
+        "expect": {"initial": {"capacitor.v": 10}, "final": {"capacitor.v": 30}}
+      }
+    }
+  }
+}
+end

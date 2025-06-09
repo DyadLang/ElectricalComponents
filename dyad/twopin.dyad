@@ -1,0 +1,18 @@
+partial component TwoPin
+  p = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": -50, "y1": 450, "x2": 50, "y2": 550}}
+    }
+  }]
+  n = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": 950, "y1": 450, "x2": 1050, "y2": 550}}
+    }
+  }]
+  variable v::Voltage
+  variable i::Current
+relations
+  v = p.v-n.v
+  i = p.i
+  p.i+n.i = 0
+end

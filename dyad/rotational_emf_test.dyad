@@ -1,0 +1,45 @@
+# Simple circuit that showcases the usage of RotationalEMF().
+test component RotationalEMFTest
+  rot_emf = RotationalEMF(k=1) [{
+    "Dyad": {"placement": {"icon": {"x1": 300, "y1": 700, "x2": 500, "y2": 900, "rot": 0}}}
+  }]
+  fixed = RotationalComponents.Fixed() [{
+    "Dyad": {"placement": {"icon": {"x1": 0, "y1": 700, "x2": 200, "y2": 900, "rot": 180}}}
+  }]
+  input_signal = BlockComponents.Sine(amplitude=1, frequency=1, offset=0, start_time=0) [{
+    "Dyad": {"placement": {"icon": {"x1": 300, "y1": 100, "x2": 500, "y2": 300, "rot": 0}}}
+  }]
+  sine_voltage = VoltageSource() [{
+    "Dyad": {"placement": {"icon": {"x1": 500, "y1": 400, "x2": 700, "y2": 600, "rot": 0}}}
+  }]
+  inertia = RotationalComponents.Inertia(J=100) [{
+    "Dyad": {"placement": {"icon": {"x1": 600, "y1": 700, "x2": 800, "y2": 900, "rot": 0}}}
+  }]
+relations
+  connect(input_signal.y, sine_voltage.V) [{"Dyad": {"edges": [{"S": 1, "M": [{"x": 600, "y": 200}], "E": 2}]}}]
+  connect(fixed.spline, rot_emf.housing) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(rot_emf.p, sine_voltage.p) [{"Dyad": {"edges": [{"S": 1, "M": [{"x": 400, "y": 500}], "E": 2}]}}]
+  connect(sine_voltage.n, rot_emf.n) [{
+    "Dyad": {
+      "edges": [
+        {
+          "S": 1,
+          "M": [
+            {"x": 750, "y": 500},
+            {"x": 750, "y": 650},
+            {"x": 550, "y": 650},
+            {"x": 550, "y": 950},
+            {"x": 400, "y": 950}
+          ],
+          "E": 2
+        }
+      ]
+    }
+  }]
+  connect(rot_emf.rotor, inertia.spline_a) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+metadata {
+  "Dyad": {
+    "tests": {"case1": {"stop": 10, "expect": {"signals": ["rot_emf.tau", "rot_emf.phi"]}}}
+  }
+}
+end

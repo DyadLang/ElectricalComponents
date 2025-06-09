@@ -1,0 +1,21 @@
+# Creates a circuit component which measures the potential at a pin.
+component PotentialSensor
+  p = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": -50, "y1": 450, "x2": 50, "y2": 550}}
+    }
+  }]
+  phi = RealOutput() [{"Dyad": {"placement": {"icon": {"x1": 950, "y1": 450, "x2": 1050, "y2": 550}}}}]
+relations
+  p.i = 0
+  phi = p.v
+metadata {
+  "Dyad": {
+    "labels": [
+      {"label": "$(instance)", "x": 500, "y": 1100, "rot": 0},
+      {"label": "V", "x": 606, "y": 676, "rot": 0}
+    ],
+    "icons": {"default": "dyad://ElectricalComponents/TwoPinSensor.svg"}
+  }
+}
+end

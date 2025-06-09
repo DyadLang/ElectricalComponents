@@ -1,0 +1,33 @@
+test component MultiSensorTest
+  source = BlockComponents.Sine(offset=1, amplitude=10, frequency=5)
+  voltage = VoltageSource()
+  resistor = Resistor(R=1)
+  capacitor = Capacitor(C=1)
+  ground = Ground()
+  multi_sensor = MultiSensor()
+relations
+  connect(source.y, voltage.V)
+  connect(voltage.p, resistor.p)
+  connect(resistor.n, multi_sensor.pc)
+  connect(multi_sensor.nc, capacitor.p)
+  connect(capacitor.n, voltage.n, ground.g)
+  connect(capacitor.p, multi_sensor.pv)
+  connect(capacitor.n, multi_sensor.nv)
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {
+        "stop": 20,
+        "initial": {"capacitor.v": 10},
+        "expect": {
+          "final": {
+            "multi_sensor.i": "0.31784799",
+            "multi_sensor.v": "0.682152",
+            "multi_sensor.power": "0.216820646"
+          }
+        }
+      }
+    }
+  }
+}
+end

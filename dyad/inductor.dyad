@@ -1,0 +1,15 @@
+component Inductor
+  extends TwoPin
+  parameter L::Inductance
+relations
+  L*der(i) = v
+metadata {
+  "Dyad": {
+    "labels": [
+      {"label": "$(instance)", "x": 500, "y": 1100, "rot": 0},
+      {"label": "L=$(L)H", "x": 500, "y": 150, "rot": 0}
+    ],
+    "icons": {"default": "dyad://ElectricalComponents/Inductor.svg"}
+  }
+}
+end

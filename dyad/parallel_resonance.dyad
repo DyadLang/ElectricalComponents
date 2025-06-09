@@ -1,0 +1,159 @@
+# Parallel resonance circuit
+example component ParallelResonance
+  # Sine
+  current_source1 = CurrentSource() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 100, "y1": 100, "x2": 300, "y2": 300, "rot": 270}}
+    }
+  }]
+  ground1 = Ground() [{
+    "Dyad": {"placement": {"icon": {"x1": 100, "y1": 400, "x2": 300, "y2": 600, "rot": 0}}}
+  }]
+  resistor1 = Resistor(R=0.5) [{
+    "Dyad": {"placement": {"icon": {"x1": 400, "y1": 100, "x2": 600, "y2": 300, "rot": 90}}}
+  }]
+  inductor1 = Inductor(L=0.1/(2*pi)) [{
+    "Dyad": {"placement": {"icon": {"x1": 700, "y1": 100, "x2": 900, "y2": 300, "rot": 90}}}
+  }]
+  capacitor1 = Capacitor(C=0.001/(2*pi)) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 1000, "y1": 100, "x2": 1200, "y2": 300, "rot": 90}}
+    }
+  }]
+  voltage_sensor1 = VoltageSensor() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 1300, "y1": 100, "x2": 1500, "y2": 300, "rot": 90}}
+    }
+  }]
+  # Input controllers
+  input_signal1 = BlockComponents.SineVariableFrequencyAndAmplitude() [{
+    "Dyad": {"placement": {"icon": {"x1": -200, "y1": 100, "x2": 0, "y2": 300, "rot": 0}}}
+  }]
+  input_signal2 = BlockComponents.CosineVariableFrequencyAndAmplitude() [{
+    "Dyad": {"placement": {"icon": {"x1": -200, "y1": 700, "x2": 0, "y2": 900, "rot": 0}}}
+  }]
+  ramp = BlockComponents.Ramp(start_time=0, duration=1, offset=0, height=200) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": -600, "y1": 250, "x2": -400, "y2": 450, "rot": 0}}
+    }
+  }]
+  const_signal = BlockComponents.Constant(k=1) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": -600, "y1": 550, "x2": -400, "y2": 750, "rot": 0}}
+    }
+  }]
+  # Cosine
+  current_source2 = CurrentSource() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 100, "y1": 700, "x2": 300, "y2": 900, "rot": 270}}
+    }
+  }]
+  ground2 = Ground() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 100, "y1": 1000, "x2": 300, "y2": 1200, "rot": 0}}
+    }
+  }]
+  resistor2 = Resistor(R=0.5) [{
+    "Dyad": {"placement": {"icon": {"x1": 400, "y1": 700, "x2": 600, "y2": 900, "rot": 90}}}
+  }]
+  inductor2 = Inductor(L=0.1/(2*pi)) [{
+    "Dyad": {"placement": {"icon": {"x1": 700, "y1": 700, "x2": 900, "y2": 900, "rot": 90}}}
+  }]
+  capacitor2 = Capacitor(C=0.001/(2*pi)) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 1000, "y1": 700, "x2": 1200, "y2": 900, "rot": 90}}
+    }
+  }]
+  voltage_sensor2 = VoltageSensor() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 1300, "y1": 700, "x2": 1500, "y2": 900, "rot": 90}}
+    }
+  }]
+relations
+  initial inductor1.i = 0
+  initial inductor2.i = 0
+  initial capacitor1.v = 0
+  initial capacitor2.v = 0
+  # inputs
+  connect(ramp.y, input_signal1.frequency, input_signal2.frequency) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "E": 1},
+        {"S": -1, "M": [{"x": -350, "y": 240}], "E": 2},
+        {"S": -1, "M": [{"x": -350, "y": 840}], "E": 3}
+      ],
+      "junctions": [{"x": -350, "y": 350}]
+    }
+  }]
+  connect(const_signal.y, input_signal1.amplitude, input_signal2.amplitude) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "E": 1},
+        {"S": -1, "M": [{"x": -300, "y": 160}], "E": 2},
+        {"S": -1, "M": [{"x": -300, "y": 760}], "E": 3}
+      ],
+      "junctions": [{"x": -300, "y": 650}]
+    }
+  }]
+  connect(input_signal1.y, current_source1.I) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(input_signal2.y, current_source2.I) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  # Sine
+  connect(current_source1.n, resistor1.p, inductor1.p, capacitor1.p, voltage_sensor1.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "M": [{"x": 200, "y": 50}], "E": -1},
+        {"S": -1, "E": 2},
+        {"S": -1, "M": [{"x": 800, "y": 50}], "E": 3},
+        {"S": -1, "M": [{"x": 1100, "y": 50}], "E": 4},
+        {"S": -1, "M": [{"x": 1400, "y": 50}], "E": 5}
+      ],
+      "junctions": [{"x": 500, "y": 50}]
+    }
+  }]
+  connect(ground1.g, current_source1.p, resistor1.n, inductor1.n, capacitor1.n, voltage_sensor1.n) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "E": -1},
+        {"S": 2, "E": -1},
+        {"S": -1, "M": [{"x": 500, "y": 350}], "E": 3},
+        {"S": -1, "M": [{"x": 800, "y": 350}], "E": 4},
+        {"S": -1, "M": [{"x": 1100, "y": 350}], "E": 5},
+        {"S": -1, "M": [{"x": 1400, "y": 350}], "E": 6}
+      ],
+      "junctions": [{"x": 200, "y": 350}]
+    }
+  }]
+  # Cosine
+  connect(current_source2.n, resistor2.p, inductor2.p, capacitor2.p, voltage_sensor2.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "M": [{"x": 200, "y": 650}], "E": 1},
+        {"S": -1, "E": 2},
+        {"S": -1, "M": [{"x": 800, "y": 650}], "E": 3},
+        {"S": -1, "M": [{"x": 1100, "y": 650}], "E": 4},
+        {"S": -1, "M": [{"x": 1400, "y": 650}], "E": 5}
+      ],
+      "junctions": [{"x": 500, "y": 650}]
+    }
+  }]
+  connect(ground2.g, current_source2.p, resistor2.n, inductor2.n, capacitor2.n, voltage_sensor2.n) [{
+    "Dyad": {
+      "edges": [
+        {"S": -1, "E": 1},
+        {"S": -1, "E": 2},
+        {"S": -1, "M": [{"x": 500, "y": 950}], "E": 3},
+        {"S": -1, "M": [{"x": 800, "y": 950}], "E": 4},
+        {"S": -1, "M": [{"x": 1100, "y": 950}], "E": 5},
+        {"S": -1, "M": [{"x": 1400, "y": 950}], "E": 6}
+      ],
+      "junctions": [{"x": 200, "y": 950}]
+    }
+  }]
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {"stop": 1, "expect": {"signals": ["voltage_sensor1.v", "voltage_sensor2.v"]}}
+    }
+  }
+}
+end

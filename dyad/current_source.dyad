@@ -1,0 +1,13 @@
+# The input signal `I` is provided as the current flowing from the positive to
+# the negative pins.
+component CurrentSource
+  extends TwoPin
+  I = RealInput() [{
+    "Dyad": {"placement": {"icon": {"x1": 450, "y1": -50, "x2": 550, "y2": 50, "rot": 90}}}
+  }]
+  # Specifies the unit of `I`
+  parameter uI::Current = 1.0
+relations
+  i = I*uI
+metadata {"Dyad": {"labels": [{"label": "$(instance)", "x": 500, "y": 1000, "rot": 0}]}}
+end

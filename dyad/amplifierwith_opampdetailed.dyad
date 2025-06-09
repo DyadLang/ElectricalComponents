@@ -1,0 +1,133 @@
+# Simple Amplifier circuit which uses OpAmpDetailed
+test component AmplifierWithOpAmpDetailed
+  op_amp = OpAmpDetailed() [{
+    "Dyad": {"placement": {"icon": {"x1": 400, "y1": 550, "x2": 600, "y2": 750, "rot": 0}}}
+  }]
+  resistor = Resistor(R=10000) [{
+    "Dyad": {"placement": {"icon": {"x1": 100, "y1": 510, "x2": 300, "y2": 710, "rot": 0}}}
+  }]
+  resistor1 = Resistor(R=20000) [{
+    "Dyad": {"placement": {"icon": {"x1": 550, "y1": 0, "x2": 750, "y2": 200, "rot": 0}}}
+  }]
+  resistor2 = Resistor(R=10000) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 800, "y1": 700, "x2": 1000, "y2": 900, "rot": 90}}
+    }
+  }]
+  voltage_source_1 = VoltageSource() [{
+    "Dyad": {"placement": {"icon": {"x1": 100, "y1": 850, "x2": 300, "y2": 1050, "rot": 0}}}
+  }]
+  voltage_source_2 = VoltageSource() [{
+    "Dyad": {"placement": {"icon": {"x1": 550, "y1": 300, "x2": 750, "y2": 500, "rot": 0}}}
+  }]
+  voltage_source_3 = VoltageSource() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 550, "y1": 850, "x2": 750, "y2": 1050, "rot": 90}}
+    }
+  }]
+  input_signal1 = BlockComponents.Sine(amplitude=12, frequency=1000, offset=0) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 100, "y1": 1200, "x2": 300, "y2": 1400, "rot": 270}}
+    }
+  }]
+  input_signal2 = BlockComponents.Constant(k=15) [{
+    "Dyad": {"placement": {"icon": {"x1": 950, "y1": 150, "x2": 1150, "y2": 350, "rot": 0}}}
+  }]
+  input_signal3 = BlockComponents.Constant(k=-15) [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 400, "y1": 1200, "x2": 600, "y2": 1400, "rot": 0}}
+    }
+  }]
+  ground = Ground() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 800, "y1": 1200, "x2": 1000, "y2": 1400, "rot": 0}}
+    }
+  }]
+relations
+  connect(input_signal1.y, voltage_source_1.V) [{"Dyad": {"edges": [{"S": 1, "E": 2}]}}]
+  connect(input_signal2.y, voltage_source_2.V) [{
+    "Dyad": {
+      "edges": [
+        {
+          "S": 1,
+          "M": [{"x": 1200, "y": 250}, {"x": 1200, "y": 550}, {"x": 650, "y": 550}],
+          "E": 2
+        }
+      ]
+    }
+  }]
+  connect(input_signal3.y, voltage_source_3.V) [{
+    "Dyad": {
+      "edges": [
+        {
+          "S": 1,
+          "M": [
+            {"x": 650, "y": 1300},
+            {"x": 650, "y": 1150},
+            {"x": 500, "y": 1150},
+            {"x": 500, "y": 950}
+          ],
+          "E": 2
+        }
+      ]
+    }
+  }]
+  initial resistor2.i = 0
+  initial op_amp.q_fp1 = 0
+  initial op_amp.q_fr1 = 0
+  initial op_amp.q_fr2 = 0
+  initial op_amp.q_fr3 = 0
+  connect(ground.g, voltage_source_1.n, op_amp.p, resistor2.n, voltage_source_3.n, voltage_source_2.n) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "E": -2},
+        {"S": -3, "E": 2},
+        {"S": -3, "M": [{"x": 350, "y": 690}], "E": 3},
+        {"S": -2, "E": 4},
+        {"S": -1, "E": 5},
+        {"S": -2, "M": [{"x": 1050, "y": 1100}, {"x": 1050, "y": 400}], "E": 6},
+        {"S": -1, "E": -2},
+        {"S": -1, "M": [{"x": 350, "y": 1100}], "E": -3}
+      ],
+      "junctions": [{"x": 650, "y": 1100}, {"x": 900, "y": 1100}, {"x": 350, "y": 950}]
+    }
+  }]
+  connect(resistor.n, op_amp.n, resistor1.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "E": -1},
+        {"S": -1, "E": 2},
+        {"S": -1, "M": [{"x": 350, "y": 100}], "E": 3}
+      ],
+      "junctions": [{"x": 350, "y": 610}]
+    }
+  }]
+  connect(resistor1.n, op_amp.outp, resistor2.p) [{
+    "Dyad": {
+      "edges": [
+        {"S": 1, "M": [{"x": 900, "y": 100}], "E": -1},
+        {"S": 2, "E": -1},
+        {"S": 3, "E": -1}
+      ],
+      "junctions": [{"x": 900, "y": 650}]
+    }
+  }]
+  connect(resistor.p, voltage_source_1.p) [{
+    "Dyad": {"edges": [{"S": 1, "M": [{"x": 50, "y": 610}, {"x": 50, "y": 950}], "E": 2}]}
+  }]
+  connect(op_amp.p_supply, voltage_source_2.p) [{"Dyad": {"edges": [{"S": 1, "M": [{"x": 500, "y": 400}], "E": 2}]}}]
+  connect(op_amp.n_supply, voltage_source_3.p) [{
+    "Dyad": {"edges": [{"S": 2, "M": [{"x": 650, "y": 800}, {"x": 500, "y": 800}], "E": 1}]}
+  }]
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {
+        "stop": 0.1,
+        "atol": {"op_amp.outp.v": 0.4},
+        "expect": {"signals": ["op_amp.outp.v", "voltage_source_1.p.v"]}
+      }
+    }
+  }
+}
+end

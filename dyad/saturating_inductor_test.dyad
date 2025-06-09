@@ -1,0 +1,25 @@
+test component SaturatingInductorTest
+  sat_inductor = SaturatingInductor(L_zero=2, L_inf=0.5, L_nominal=1)
+  signal = BlockComponents.Constant(k=40)
+  source = VoltageSource()
+  ground = Ground()
+  inductor = Inductor(L=1)
+relations
+  initial sat_inductor.i = 1e-10
+  connect(signal.y, source.V)
+  connect(source.n, ground.g, sat_inductor.n, inductor.n)
+  connect(sat_inductor.p, source.p, inductor.p)
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {
+        "stop": 10,
+        "expect": {
+          "initial": {"sat_inductor.L_actual": 2},
+          "final": {"sat_inductor.L_actual": 0.50863266}
+        }
+      }
+    }
+  }
+}
+end

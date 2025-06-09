@@ -1,0 +1,26 @@
+# Combines a `VoltageSensor` and a `CurrentSensor`. `n` pin of the `VoltageSensor`
+component MultiSensor
+  extends PowerSensor
+  i = RealOutput() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 650, "y1": 950, "x2": 750, "y2": 1050, "rot": 90}}
+    }
+  }]
+  v = RealOutput() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 850, "y1": 950, "x2": 950, "y2": 1050, "rot": 90}}
+    }
+  }]
+relations
+  i = current_sensor.i
+  v = voltage_sensor.v
+metadata {
+  "Dyad": {
+    "labels": [
+      {"label": "$(instance)", "x": 500, "y": 1100, "rot": 0},
+      {"label": "M", "x": 500, "y": 713, "rot": 0}
+    ],
+    "icons": {"default": "dyad://ElectricalComponents/FourPinSensor.svg"}
+  }
+}
+end

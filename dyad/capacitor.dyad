@@ -1,0 +1,15 @@
+component Capacitor
+  extends TwoPin
+  parameter C::Capacitance
+relations
+  C*der(v) = i
+metadata {
+  "Dyad": {
+    "labels": [
+      {"label": "$(instance)", "x": 500, "y": 1100, "rot": 0},
+      {"label": "C=$(C)F", "x": 500, "y": 150, "rot": 0}
+    ],
+    "icons": {"default": "dyad://ElectricalComponents/Capacitor.svg"}
+  }
+}
+end

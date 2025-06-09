@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <defs>
+    <linearGradient id="a" x1="500.56" x2="500.56" y1="524.14" y2="474.14" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5d5d7a"/>
+      <stop offset=".1" stop-color="#7e7ea1"/>
+      <stop offset=".23" stop-color="#a3a5ce"/>
+      <stop offset=".33" stop-color="#bbbdea"/>
+      <stop offset=".39" stop-color="#c4c6f5"/>
+      <stop offset=".4" stop-color="#c1c2f1"/>
+      <stop offset=".52" stop-color="#b1add9"/>
+      <stop offset=".62" stop-color="#a8a1cb"/>
+      <stop offset=".72" stop-color="#a59dc7"/>
+      <stop offset="1" stop-color="#5d5d7a"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#a)" d="M50.48 474.14h900.17v50H50.48z"/>
+  <path fill="#fff" d="M4 4h992v992H4z"/>
+  <path fill="#de39c8" d="M992 8v984H8V8zm8-8H0v1000h1000z"/>
+  <path fill="none" stroke="#000" stroke-linejoin="round" stroke-width="8" d="M501.26 649.32v338.26m0-974.98v347.26"/>
+  <circle cx="499.48" cy="501.64" r="146.24" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-width="8"/>
+</svg>

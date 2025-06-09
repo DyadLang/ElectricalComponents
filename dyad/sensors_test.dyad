@@ -1,0 +1,36 @@
+test component SensorsTest
+  source = BlockComponents.Sine(offset=1, amplitude=10, frequency=5)
+  voltage = VoltageSource()
+  resistor = Resistor(R=1)
+  capacitor = Capacitor(C=1)
+  ground = Ground()
+  voltage_sensor = VoltageSensor()
+  current_sensor = CurrentSensor()
+  power_sensor = PowerSensor()
+relations
+  connect(source.y, voltage.V)
+  connect(voltage.p, resistor.p)
+  connect(resistor.n, current_sensor.p)
+  connect(current_sensor.n, power_sensor.pc)
+  connect(power_sensor.nc, capacitor.p)
+  connect(capacitor.n, voltage.n, ground.g)
+  connect(capacitor.p, voltage_sensor.p, power_sensor.pv)
+  connect(capacitor.n, voltage_sensor.n, power_sensor.nv)
+metadata {
+  "Dyad": {
+    "tests": {
+      "case1": {
+        "stop": 20,
+        "initial": {"capacitor.v": 10},
+        "expect": {
+          "final": {
+            "current_sensor.i": "0.31784799",
+            "voltage_sensor.v": "0.682152",
+            "power_sensor.power": "0.216820646"
+          }
+        }
+      }
+    }
+  }
+}
+end

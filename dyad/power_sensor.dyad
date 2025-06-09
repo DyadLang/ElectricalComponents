@@ -1,0 +1,47 @@
+# Combines a `VoltageSensor` and a `CurrentSensor` to measure the power being
+# consumed by a circuit.
+component PowerSensor
+  pc = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": -50, "y1": 450, "x2": 50, "y2": 550}}
+    }
+  }]
+  nc = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": 950, "y1": 450, "x2": 1050, "y2": 550}}
+    }
+  }]
+  pv = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "pos", "x1": 450, "y1": -50, "x2": 550, "y2": 50}}
+    }
+  }]
+  nv = Pin() [{
+    "Dyad": {
+      "placement": {"icon": {"iconName": "neg", "x1": 450, "y1": 950, "x2": 550, "y2": 1050}}
+    }
+  }]
+  voltage_sensor = VoltageSensor()
+  current_sensor = CurrentSensor()
+  # Instantaneous power
+  power = RealOutput() [{
+    "Dyad": {
+      "placement": {"icon": {"x1": 150, "y1": 950, "x2": 250, "y2": 1050, "rot": 90}}
+    }
+  }]
+relations
+  connect(pv, voltage_sensor.p)
+  connect(voltage_sensor.n, nv)
+  connect(pc, current_sensor.p)
+  connect(current_sensor.n, nc)
+  power = voltage_sensor.v*current_sensor.i
+metadata {
+  "Dyad": {
+    "labels": [
+      {"label": "$(instance)", "x": 500, "y": 1100, "rot": 0},
+      {"label": "P", "x": 500, "y": 713, "rot": 0}
+    ],
+    "icons": {"default": "dyad://ElectricalComponents/PowerSensor.svg"}
+  }
+}
+end

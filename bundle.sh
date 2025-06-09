@@ -1,0 +1,1 @@
+zip -r ElectricalComponents.zip ./Project.toml ./Manifest.toml ./assets ./generated ./jsml ./src ./test

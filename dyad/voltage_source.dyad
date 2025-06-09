@@ -1,0 +1,17 @@
+# The input signal `V` is provided as the voltage difference across the positive to
+# the negative pins.
+component VoltageSource
+  extends TwoPin
+  V = RealInput() [{
+    "Dyad": {"placement": {"icon": {"x1": 450, "y1": -50, "x2": 550, "y2": 50, "rot": 90}}}
+  }]
+  parameter uV::Voltage = 1.0
+relations
+  v = V*uV
+metadata {
+  "Dyad": {
+    "labels": [{"label": "$(instance)", "x": 500, "y": 1100, "rot": 0}],
+    "icons": {"default": "dyad://ElectricalComponents/Voltage.svg"}
+  }
+}
+end
